@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accp.dao.ReimburseVoDao">
+	<select id="selectReimburseVo" resultType="com.accp.vo.ReimburseVo">
+		SELECT a.reimburse_id AS reimburseId,a.total_count AS totalCount,
+		b.employee_name AS employeeName,a.create_time AS createTime,
+		c.status_name AS statusName,d.employee_name AS employeeName2,
+		a.create_man AS employeeId,a.next_deal_man AS employeeId2
+		FROM reimburse a JOIN employee b ON a.create_man=b.employee_id 
+		JOIN tb_status c ON a.status_id=c.status_id JOIN employee d 
+		ON a.next_deal_man=d.employee_id
+		<where>
+			<if test="startTime!=null">
+				AND a.create_time &gt;= #{startTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endTime!=null">
+				AND a.create_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="statusId!=null">
+				AND a.status_id=#{statusId}
+			</if>
+			<!-- 普通员工 -->
+				<if test="positionid==3 or positionid==6">
+					AND a.create_man=#{employeeId}
+				</if>
+				<!-- 部门经理 -->
+				<if test="positionid==2">
+					AND a.create_man=#{employeeId} OR a.department_id=#{departmentId} AND a.status_id=2
+				</if>
+				<!-- 总经理 -->
+				<if test="positionid==1">
+					AND a.create_man=#{employeeId} OR a.total_count>=5000
+				</if>
+				<!-- 财务 -->
+				<if test="positionid==4">
+					AND a.create_man=#{employeeId} OR a.status_id=3
+				</if>
+				<!-- 出纳 -->
+				<if test="positionid==5">
+					AND a.create_man=#{employeeId} OR a.status_id=4
+				</if>
+			<!-- <choose>
+				普通员工
+				<when test="positionid==3 or positionid==6">
+					AND a.create_man=#{employeeId}
+				</when>
+				部门经理
+				<when test="positionid==2">
+					AND a.create_man=#{employeeId} OR a.department_id=#{departmentId} AND a.status_id=2
+				</when>
+				总经理
+				<when test="positionid==1">
+					AND a.create_man=#{employeeId} OR a.total_count>=5000
+				</when>
+				财务
+				<when test="positionid==4">
+					AND a.create_man=#{employeeId} OR a.status_id=3
+				</when>
+				出纳
+				<when test="positionid==5">
+					AND a.create_man=#{employeeId} OR a.status_id=4
+				</when>
+			</choose> -->
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<!-- 根据id查询报销vo对象 -->
+	<select id="selectReivoByReiid" resultType="com.accp.vo.ReimburseVo">
+		SELECT a.reimburse_id AS reimburseId,a.total_count AS totalCount,
+		b.employee_name AS employeeName,a.create_time AS createTime,
+		c.status_name AS statusName,d.employee_name AS employeeName2,
+		a.create_man AS employeeId,a.next_deal_man AS employeeId2,
+		e.department_name AS departmentName,f.position_name AS positionName,
+		e.department_id AS departmentId,f.position_id AS positionId,
+		a.EVENT AS event 
+		FROM reimburse a JOIN employee b ON a.create_man=b.employee_id 
+		JOIN tb_status c ON a.status_id=c.status_id JOIN employee d 
+		ON a.next_deal_man=d.employee_id JOIN department e 
+		ON a.department_id=e.department_id JOIN tb_position f 
+		ON b.position_id=f.position_id
+		WHERE a.reimburse_id=#{reimburseId}
+	</select>
+</mapper>

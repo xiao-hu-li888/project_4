@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accp.dao.Reimburse_detailDao" >
+  <resultMap id="BaseResultMap" type="com.accp.pojo.Reimburse_detail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="main_id" property="mainId" jdbcType="INTEGER" />
+    <result column="subTotal" property="subtotal" jdbcType="REAL" />
+    <result column="rdesc" property="rdesc" jdbcType="VARCHAR" />
+    <result column="pictrue_name" property="pictrueName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.accp.pojo.Reimburse_detail" extends="BaseResultMap" >
+    <result column="pictrue_path" property="pictruePath" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, main_id, subTotal, rdesc, pictrue_name, pictrue_path
+  </sql>
+  <sql id="Blob_Column_List" >
+    pictrue_path
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from reimburse_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from reimburse_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.accp.pojo.Reimburse_detail" >
+    insert into reimburse_detail (id, main_id, subTotal, 
+      rdesc, pictrue_name, pictrue_path
+      )
+    values (#{id,jdbcType=INTEGER}, #{mainId,jdbcType=INTEGER}, #{subtotal,jdbcType=REAL}, 
+      #{rdesc,jdbcType=VARCHAR}, #{pictrueName,jdbcType=VARCHAR}, #{pictruePath,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.accp.pojo.Reimburse_detail" >
+    insert into reimburse_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mainId != null" >
+        main_id,
+      </if>
+      <if test="subtotal != null" >
+        subTotal,
+      </if>
+      <if test="rdesc != null" >
+        rdesc,
+      </if>
+      <if test="pictrueName != null" >
+        pictrue_name,
+      </if>
+      <if test="pictruePath != null" >
+        pictrue_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mainId != null" >
+        #{mainId,jdbcType=INTEGER},
+      </if>
+      <if test="subtotal != null" >
+        #{subtotal,jdbcType=REAL},
+      </if>
+      <if test="rdesc != null" >
+        #{rdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="pictrueName != null" >
+        #{pictrueName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictruePath != null" >
+        #{pictruePath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.accp.pojo.Reimburse_detail" >
+    update reimburse_detail
+    <set >
+      <if test="mainId != null" >
+        main_id = #{mainId,jdbcType=INTEGER},
+      </if>
+      <if test="subtotal != null" >
+        subTotal = #{subtotal,jdbcType=REAL},
+      </if>
+      <if test="rdesc != null" >
+        rdesc = #{rdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="pictrueName != null" >
+        pictrue_name = #{pictrueName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictruePath != null" >
+        pictrue_path = #{pictruePath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.accp.pojo.Reimburse_detail" >
+    update reimburse_detail
+    set main_id = #{mainId,jdbcType=INTEGER},
+      subTotal = #{subtotal,jdbcType=REAL},
+      rdesc = #{rdesc,jdbcType=VARCHAR},
+      pictrue_name = #{pictrueName,jdbcType=VARCHAR},
+      pictrue_path = #{pictruePath,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="js/My97DatePicker/SKIN/WdatePicker.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<input type="hidden" name="positionid"/>
+	<input type="hidden" name="employeeId"/>
+	<input type="hidden" name="departmentId"/>
+	<div class="action  divaction">
+		<div class="t">报销单列表</div>
+		<div class="pages">
+			<div class="forms">
+				<!-- <form id="myForm" name="queryForm"
+					action="../jboa/page/findList?pageNum=1&pageSize=10"
+					method="get"> -->
+					<label>报销单状态</label> <select name="statusId"
+						id="statusId">
+						<option value="0">全部</option>
+						<option value="1">新创建</option>
+						<option value="2">待审批</option>
+						<option value="3">审批中</option>
+						<option value="4">已审批</option>
+						<option value="5">已付款</option>
+						<option value="6">已打回</option>
+						<option value="7">已存档</option>
+					</select> <label for="time">开始时间</label> <input type="text" name="sTime"
+						value="" id="startDate" class="nwinput"> <label
+						for="end-time">结束时间</label> <input type="text" name="eTime"
+						value="" id="endDate" class="nwinput"> <!-- <input
+						type="hidden" name="pageNum" value="1"> <input
+						type="hidden" name="pageSize" value="2"> --> <input
+						type="button" id="claimVoucher_searchClaimVoucher_action_0"
+						value="查询" class="submit_01">
+				<!-- </form> -->
+			</div>
+			<!--增加报销单 区域 开始-->
+			<form id="claimVoucher_searchClaimVoucher_action"
+				name="claimVoucherForm"
+				action="jsp/claim/claimVoucher_searchClaimVoucher.action"
+				method="post">
+				<table width="90%" border="0" cellspacing="0" cellpadding="0"
+					class="list items">
+					<thead>
+						<tr class="even">
+							<td>编号</td>
+							<td>填报日期</td>
+							<td>填报人</td>
+							<td>总金额</td>
+							<td>状态</td>
+							<td>待处理人</td>
+							<td width=20%>操作</td>
+						</tr>
+					</thead>
+					<tbody id="jiazai">
+						
+							<tr>
+							<td><a href="javascript:void(0)">247</a></td>
+							<td>
+								2019-08-14 15:34:56
+							</td>
+							<td>王健林</td>
+							<td>200.0</td>
+							<td>待审批</td>
+							<td>presidentXi</td>
+							<td>
+								
+								
+								<a target="rightFrame" href="ckbx2.html"> 
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a> 
+								
+							</td>
+						</tr>
+						
+							<tr>
+							<td><a href="javascript:void(0)">246</a></td>
+							<td>
+								2019-08-09 14:55:12
+							</td>
+							<td>王健林</td>
+							<td>1.0</td>
+							<td>待审批</td>
+							<td>presidentXi</td>
+							<td>
+								
+								
+								<a target="rightFrame" href="/jboa/page/getDetails?reimburseId=246"> 
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a> 
+								
+							</td>
+						</tr>
+						
+							<tr>
+							<td><a href="javascript:void(0)">242</a></td>
+							<td>
+								2019-08-07 16:12:24
+							</td>
+							<td>任正非</td>
+							<td>99.0</td>
+							<td>已打回</td>
+							<td>任正非</td>
+							<td>
+								
+								
+									
+									
+								
+								<a target="rightFrame" href="/jboa/page/getDetails?reimburseId=242"> 
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a> 
+								
+							</td>
+						</tr>
+						
+							<tr>
+							<td><a href="javascript:void(0)">237</a></td>
+							<td>
+								2019-08-03 09:04:36
+							</td>
+							<td>丁磊</td>
+							<td>10.0</td>
+							<td>已付款</td>
+							<td>无</td>
+							<td>
+								
+								
+								<a target="rightFrame" href="/jboa/page/getDetails?reimburseId=237"> 
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a> 
+								
+							</td>
+						</tr>
+					</tbody>
+					<tr>
+						<td colspan="7" align="center">
+							<div class="page-bar">
+								<a href="javascript:void(0);" id="shou">首页</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="prev">上一页</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript:void(0);" id="next">下一页</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="last">尾页</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript:void(0);" id="yeshu"></a>/<a href="javascript:void(0);" id="yeshu2"></a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+			<!--增加报销单 区域 结束-->
+		</div>
+	</div>
+</body>
+<!-- <script type="text/javascript" src="js/common.js"></script> -->
+<script src="js/jquery-1.12.4.js"></script>
+<!-- <script type="text/javascript" src="js/My97DatePicker/WdatePicker.js"></script> -->
+<script>
+var statusId=$("select[name=statusId]").val();
+var startTime=$("input[name=sTime]").val();
+var endTime=$("input[name=eTime]").val();
+if (startTime=="") {
+	startTime=null;
+}
+if (endTime=="") {
+	endTime=null;
+}
+/* alert(statusId);
+alert(startTime);
+alert(endTime); */
+var PAGE_INFO;//非常重要
+//取值
+$.getJSON(`/project_4/api/emps/getemp`,function(emp){
+	//赋值
+	$("input[type=hidden][name=positionid]").val(emp.positionId);
+	$("input[type=hidden][name=employeeId]").val(emp.employeeId);
+	$("input[type=hidden][name=departmentId]").val(emp.departmentId);
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	//alert(positionid);
+	//alert(employeeId);
+	//alert(departmentId);
+	load(1,3,startTime,endTime,statusId,positionid,employeeId,departmentId);//初始化
+});
+//点击带条件分页查询
+$("input.submit_01").click(function(){
+	var statusId=$("select[name=statusId]").val();
+	var startTime=$("input[name=sTime]").val();
+	var endTime=$("input[name=eTime]").val();
+	if (startTime=="") {
+		startTime=null;
+	}
+	if (endTime=="") {
+		endTime=null;
+	}
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	alert(statusId);
+	alert(startTime);
+	alert(endTime);
+	load(1,2,startTime,endTime,statusId,positionid,employeeId,departmentId);//初始化
+});
+//首页
+$("#shou").click(function(){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	load(PAGE_INFO.firstPage,PAGE_INFO.pageSize,startTime,endTime,statusId,positionid,employeeId,departmentId);
+});
+//上一页	es6 定义函数
+$("#prev").click(e=>{
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	if(PAGE_INFO.hasPreviousPage){
+		load(PAGE_INFO.prePage,PAGE_INFO.pageSize,startTime,endTime,statusId,positionid,employeeId,departmentId);
+	}else{
+		alert("没有上一页");
+	}
+});
+//下一页
+$("#next").click(function(e){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	if(PAGE_INFO.hasNextPage){
+		load(PAGE_INFO.nextPage,PAGE_INFO.pageSize,startTime,endTime,statusId,positionid,employeeId,departmentId);
+	}else{
+		alert("没有下一页");
+	}
+});
+//尾页
+$("#last").click(function(){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	load(PAGE_INFO.lastPage,PAGE_INFO.pageSize,startTime,endTime,statusId,positionid,employeeId,departmentId);
+});
+	/*$(function(){
+		 //日期选择控件
+	 	$("#startDate").click(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endDate\')}',isShowClear:true, readOnly:true });
+		});
+		$("#endDate").click(function(){
+			WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startDate\')}',isShowClear:true, readOnly:true });
+		});
+	});*/
+
+//点击进行提交
+$(document).on("click",".sava",function(){
+	//无需跳页面
+	var reimburseId=$(this).parent().parent().children().eq(0).text();
+	var flag=confirm("是否提交？");
+	if (flag==true) {
+		var rei = {};
+		rei["reimburseId"]=reimburseId;
+		rei["statusId"] = 2;
+		$.ajax(`/project_4/api/reis/rei`, {
+			type : "put",//非常重要
+			dataType : "json",
+			contentType : "application/json",//非常重要
+			data : JSON.stringify(rei),//非常重要
+			success : function(data) {
+				if (data.code == 200) {
+					alert("提交成功");
+					window.location.reload();
+				} else {
+					alert("提交失败");
+				}
+			}
+		});
+	}else{
+		
+	}
+	
+});
+//点击进行修改
+$(document).on("click",".edit",function(){
+	//跳页面
+	//var zhi="edit";
+	var reimburseId=$(this).parent().parent().children().eq(0).text();
+	//window.sessionStorage.setItem("zhi",zhi);
+	window.sessionStorage.setItem("reimburseId",reimburseId);
+	location.href="xgbx.html";
+});
+//点击进行删除
+$(document).on("click",".delete",function(){
+	var reimburseId=$(this).parent().parent().children().eq(0).text();
+	var flag=confirm("是否确认删除？");
+	if (flag==true) {
+		//根据id删除
+		$.ajax(`/project_4/api/reis/rei/${reimburseId}`,{
+			type:"delete",
+			dataType:"json",
+			success:function(data){
+				if (data.code == 200) {
+					alert("删除成功");
+					window.location.reload();
+				} else {
+					alert("删除失败");
+				}
+				
+			}
+		});
+	}else{
+		
+	}
+});
+//点击查询
+$(document).on("click",".search",function(){
+	var zhi='search';
+	var reimburseId=$(this).parent().parent().children().eq(0).text();
+	window.sessionStorage.setItem("zhi",zhi);
+	window.sessionStorage.setItem("reimburseId",reimburseId);
+	location.href="ckbx2.html";
+});
+//点击进行审批
+$(document).on("click",".sub",function(){
+	var zhi='sub';
+	var reimburseId=$(this).parent().parent().children().eq(0).text();
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	window.sessionStorage.setItem("zhi",zhi);
+	window.sessionStorage.setItem("reimburseId",reimburseId);
+	window.sessionStorage.setItem("positionid",positionid);
+	location.href="ckbx2.html";
+});
+
+function load(pageNum,pageSize,startTime,endTime,statusId,positionid,employeeId,departmentId){
+		$.getJSON(`/project_4/api/reivos/${pageNum}/${pageSize}/${startTime}/${endTime}/${statusId}/${positionid}/${employeeId}/${departmentId}`,function(pageInfo){
+			PAGE_INFO=pageInfo;//非常重要
+			$("table>tbody#jiazai").empty();
+			$.each(pageInfo.list,function(i,obj){
+				
+				
+				var $row=$(`<tr>
+					<td><a href="javascript:void(0)">${obj.reimburseId}</a></td>
+					<td>
+						${obj.createTime}
+					</td>
+					<td>${obj.employeeName}</td>
+					<td>${obj.totalCount}</td>
+					<td>${obj.statusName}</td>
+					<td>${obj.employeeName2}</td>
+					<td class='imgimg'>
+					</td>
+				</tr>`);
+				$("table>tbody#jiazai").append($row);
+				var $ping="";
+				if (positionid==3 || positionid==6) {
+					if (obj.statusName=="新创建") {
+						$ping=$(`<a href="javascript:void(0);" class='sava'><img src="images/save.gif" width="16" height="15"></a>
+								<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>
+								<a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a>
+								<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a>`);
+					}else if(obj.statusName=="待审批" || obj.statusName=="审批中" || obj.statusName=="已审批" || obj.statusName=="已付款"){
+						$ping=$(`<a href="javascript:void(0);" class='search'>
+							<img src="images/search.gif" title="查看详情" width="16" height="15">
+						</a>`);
+					}else if(obj.statusName=="已打回"){
+						$ping=$(`<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>`);
+					}
+					
+				}else if(positionid==2){
+					//部门经理
+					//不是自己，是员工
+					if (employeeId!=obj.employeeId) {
+						//alert(employeeId);
+						//alert(obj.employeeId);
+						if (obj.statusName=="新创建") {
+							$ping=$(`<a href="javascript:void(0);" class='sava'><img src="images/save.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='search'>
+										<img src="images/search.gif" title="查看详情" width="16" height="15">
+									</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+						}else{
+							$ping=$(`<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+							
+						}
+					}else{
+						//是自己了
+						if (obj.statusName=="新创建") {
+							$ping=$(`<a href="javascript:void(0);" class='sava'><img src="images/save.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='search'>
+										<img src="images/search.gif" title="查看详情" width="16" height="15">
+									</a>`);
+						}else if(obj.statusName=="待审批" || obj.statusName=="审批中" || obj.statusName=="已审批" || obj.statusName=="已付款"){
+							$ping=$(`<a href="javascript:void(0);" class='search'>
+								<img src="images/search.gif" title="查看详情" width="16" height="15">
+							</a>`);
+						}else if(obj.statusName=="已打回"){
+							$ping=$(`<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>`);
+						}
+					}
+				}else if(positionid==4 || positionid==5){
+					//不是自己，是其他人
+					if (employeeId!=obj.employeeId) {
+						if (obj.statusName=="新创建") {
+							$ping=$(`<a href="javascript:void(0);" class='sava'><img src="images/save.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='search'>
+										<img src="images/search.gif" title="查看详情" width="16" height="15">
+									</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+						}else{
+							$ping=$(`<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+							
+						}
+					}else{
+						//是自己了
+						if (obj.statusName=="新创建") {
+							$ping=$(`<a href="javascript:void(0);" class='sava'><img src="images/save.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='edit'><img src="images/edit.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a>
+									<a href="javascript:void(0);" class='search'>
+										<img src="images/search.gif" title="查看详情" width="16" height="15">
+									</a>`);
+						}else if(obj.statusName=="待审批" || obj.statusName=="审批中" || obj.statusName=="已审批" || obj.statusName=="已付款"){
+							$ping=$(`<a href="javascript:void(0);" class='search'>
+								<img src="images/search.gif" title="查看详情" width="16" height="15">
+							</a>`);
+						}
+					}
+				}
+				$("table>tbody#jiazai>tr").eq(i).children("td.imgimg").append($ping);
+			});
+			
+			$("#yeshu").text("第"+pageInfo.pageNum+"页");
+			$("#yeshu2").text("共"+pageInfo.pages+"页");
+		});
+}   	
+</script>
+
+</html>

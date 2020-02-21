@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+<style>
+	.img{width:40px;height:40px;cursor:pointer;}
+	.weight{font-weight: bold;}
+	#one{
+		display: none;
+	}
+	#two{
+		display: none;
+	}
+</style>
+</head>
+<body>
+	<input type="hidden" name="positionid"/>
+	<input type="hidden" name="employeeId"/>
+	<input type="hidden" name="departmentId"/>
+	<input type="hidden" name="employeeIdAstian"/>
+	<form id="myForm" name="myForm" method="post">
+		<div class="action  divaction">
+			<div class="t">查看报销单</div>
+			<div class="pages">
+				<!--增加报销单 区域 开始-->
+				<table width="90%" border="0" cellspacing="0" cellpadding="0"
+					class="addform-base">
+					<caption>基本信息</caption>
+					<tbody>
+						<tr>
+							<td>编&nbsp;&nbsp;号：<span id="reimburseId"></span></td>
+							<td>填&nbsp;写&nbsp;人：<span id="employeeName"></span></td>
+							<td>部&nbsp;&nbsp;门：<span id="departmentName"></span></td>
+							<td>职&nbsp;&nbsp;位：<span id="positionName"></span></td>
+						</tr>
+						<tr>
+							<td>总金额：<span id="totalCount"></span></td>
+							<td>填报时间：<span id="createTime"></span></td>
+							<td>状态：<span id="statusName"></span></td>
+							<td>待处理人：<span id="employeeName2"></span></td>
+						</tr>
+						<tr>
+							<td colspan="4"><p>-------------------------------------------------------------------------------</p></td>
+						</tr>
+					</tbody>
+				</table>
+				<p>&nbsp;</p>
+				<table width="90%" border="0" cellspacing="0" cellpadding="0"
+					class="addform-base">
+					<thead>
+						<tr>
+							<td>项目说明</td>
+							<td>项目金额</td>
+							<td>票据截图</td>
+						</tr>
+					</thead>
+					<tbody id="jiazai">
+						
+							<!-- <tr>
+								<td>
+									<span>旅游</span>
+								</td>
+								<td>
+									<span>200.0</span>
+								</td>
+								<td><img class="img" src="images/66dd8b86cd7743bf805ce9d136d274c0.jpg"></td>
+							</tr> -->
+						
+
+					</tbody>
+				</table>
+				<p>&nbsp;</p>
+				<p>-------------------------------------------------------------------------------</p>
+
+				<table style="margin-top: 15px;" width="90%" border="0" cellspacing="0" cellpadding="0"
+					class="addform-base" id="shenchabiao">
+					<thead>
+						
+					</thead>
+					<tbody>
+						
+
+					</tbody>
+
+				</table>
+				<p id="one">审批意见：</p>
+				<p>&nbsp;</p>
+				<p id="two">
+					<textarea rows="3" cols="40" id="checkComment"></textarea>
+				</p>
+				
+
+				<p>&nbsp;</p>
+				<p id="zhuijia">
+					<!-- <input type="button" value="返回" onclick="window.history.go(-1)"
+						class="submit_01"> -->
+				</p>
+				<!--增加报销单 区域 结束-->
+			</div>
+		</div>
+	</form>
+</body>
+<script src="js/jquery-1.12.4.js"></script>
+<script type="text/javascript">
+//赋初始值
+$.getJSON(`/project_4/api/emps/getemp`,function(emp){
+	//赋值
+	$("input[type=hidden][name=positionid]").val(emp.positionId);
+	$("input[type=hidden][name=employeeId]").val(emp.employeeId);
+	$("input[type=hidden][name=departmentId]").val(emp.departmentId);
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+});
+var zhi=window.sessionStorage.getItem("zhi");
+var reimburseId=window.sessionStorage.getItem("reimburseId");
+var positionid=window.sessionStorage.getItem("positionid");
+if (reimburseId) {
+	if (zhi=="search") {
+		//查看信息
+		var $btn1=$(`<input type="button" value="返回" onclick="window.history.go(-1)"
+				class="submit_01">`);
+		$("#zhuijia").prepend($btn1);
+		load(reimburseId);
+		var mainId=reimburseId;
+		load2(mainId);
+		var bizId=reimburseId;
+		load3(bizId);
+	}else if(zhi=="sub"){
+		var $btn1;
+		if (positionid) {
+			if (positionid==1 || positionid==2) {
+				$btn1=$(`<input type="button" value="审批通过"
+						class="btn1 submit_01" name="2"><input type="button" value="打回"
+						class="btn1 submit_01" name="1"><input type="button" value="审批拒绝"
+							class="btn1 submit_01"> name="3"`);
+			}else if(positionid==4){
+				//财务只能审批通过和打回
+				$btn1=$(`<input type="button" value="审批通过"
+						class="btn1 submit_01"><input type="button" value="打回"
+						class="btn1 submit_01">`);
+			}else if(positionid==5){
+				//出纳只能审批通过
+				$btn1=$(`<input type="button" value="审批通过"
+						class="btn1 submit_01">`);
+			}
+		}
+		//进行审批
+		$("#zhuijia").prepend($btn1);
+		load(reimburseId);
+		var mainId=reimburseId;
+		load2(mainId);
+		var bizId=reimburseId;
+		load3(bizId);
+		$("#one").show();
+		$("#two").show();
+	}
+	
+}
+
+//审批通过
+$(document).on("click",".btn1",function(){
+	var reimburseId=$("#reimburseId").text();//报销表id
+	var myDate=new Date();
+	var year=myDate.getFullYear();//年份
+	var month=parseInt(myDate.getMonth())+1;//当前月份
+	var date=myDate.getDate();//天数
+	var hour=myDate.getHours();//小时数
+	var minute=myDate.getMinutes();//分
+	var second=myDate.getSeconds();//秒
+	var checkTime=year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;//创建时间
+	var checkResult;//审查结果
+	if ($(this).val()=="审批通过") {
+		checkResult=2;
+	}else if($(this).val()=="打回"){
+		checkResult=1;
+	}else{
+		checkResult=3;
+	}
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();//审查人id
+	var checkComment=$("#checkComment").val();
+	var statusId;//状态id
+	if ($(this).val()=="打回") {
+		statusId=6;
+	}else{
+		if (positionid==1 || positionid==2) {
+			statusId=3;
+		}else if(positionid==4){
+			statusId=4;
+		}else if(positionid==5){
+			statusId=5;
+		}
+	}
+	//先修改状态和待处理人
+	var nextDealMan;
+	//判断状态
+	if ($(this).val()=="审批拒绝") {
+		nextDealMan=1007;
+	}else if($(this).val()=="打回"){
+		nextDealMan=$("input[type=hidden][name=employeeIdAstian]").val();
+	}else{
+		//判断总金额是多少
+		var totalCount=$("#totalCount").text();
+		if (positionid==1) {
+			nextDealMan=1001;
+		}else if(positionid==2){
+			if (totalCount>=5000) {
+				nextDealMan=1006;
+			}else{
+				nextDealMan=1001;
+			}
+		}else if(positionid==4){
+			nextDealMan=1002;
+		}else if(positionid==5){
+			nextDealMan=1007;
+		}
+	}
+	//alert(nextDealMan);
+	var rei = {};
+	rei["reimburseId"]=reimburseId;
+	rei["statusId"] = statusId;
+	rei["nextDealMan"]=nextDealMan;
+	$.ajax(`/project_4/api/reis/rei`, {
+		type : "put",//非常重要
+		dataType : "json",
+		contentType : "application/json",//非常重要
+		data : JSON.stringify(rei),//非常重要
+		success : function(data) {
+			if (data.code == 200) {
+				//alert("提交成功");
+				//window.location.reload();
+			} else {
+				//alert("提交失败");
+			}
+		}
+	});
+	//新增审查表
+	var check = {};
+	check["bizId"] = reimburseId;
+	check["typeId"] = 2;
+	check["checkTime"] = checkTime;
+	check["checkMan"] = employeeId;
+	check["checkResult"] = checkResult;
+	check["checkComment"] = checkComment;
+	$.ajax(`/project_4/api/checks/check`, {
+		type : "post",//非常重要
+		dataType : "json",
+		contentType : "application/json",//非常重要
+		data : JSON.stringify(check),//非常重要
+		success : function(data) {
+			if (data.code == 200) {
+				alert("审批成功");
+				location.href='ckbx.html';
+			} else {
+				alert("审批失败");
+			}
+		}
+	});
+});
+function load(reimburseId){
+	$.getJSON(`/project_4/api/reivos/reivo/${reimburseId}`,function(temp){
+		$("#reimburseId").text(temp.reimburseId);
+		$("input[type=hidden][name=employeeIdAstian]").val(temp.employeeId);
+		$("#employeeName").text(temp.employeeName);
+		$("#departmentName").text(temp.departmentName);
+		$("#positionName").text(temp.positionName);
+		$("#totalCount").text(temp.totalCount);
+		$("#createTime").text(temp.createTime);
+		$("#statusName").text(temp.statusName);
+		$("#employeeName2").text(temp.employeeName2);
+	});
+}
+function load2(mainId){
+	$.getJSON(`/project_4/api/reis/reide/${mainId}`,function(temp){
+		$("table>tbody#jiazai").empty();
+		$.each(temp,function(i,obj){
+			var $row=$(`<tr>
+					<td>
+					<span>${obj.rdesc}</span>
+				</td>
+				<td>
+					<span>${obj.subtotal}</span>
+				</td>
+				<td><img class="img" src="${obj.pictruePath}"></td>
+			</tr>`);
+			$("table>tbody#jiazai").append($row);
+		});
+	});
+}
+function load3(bizId){
+	var typeId=2;
+	$.getJSON(`/project_4/api/checks/checkvo/${typeId}/${bizId}`,function(temp){
+		$("table#shenchabiao>thead").empty();
+		$("table#shenchabiao>tbody").empty();
+		var $thead=$(`<tr>
+				<td>审查人</td>
+				<td>审查意见</td>
+				<td>审查时间</td>
+				<td>审查结果</td>
+			</tr>`);
+		$("table#shenchabiao>thead").append($thead);
+		$.each(temp,function(i,obj){
+			var $row=$(`<tr>
+					<td>${obj.employeeName}</td>
+					<td>${obj.checkComment}</td>
+					<td>${obj.checkTime}</td>
+					<td>${obj.resultName}</td>
+				</tr>`);
+			$("table#shenchabiao>tbody").append($row);
+		});
+	});
+}
+</script>
+</html>

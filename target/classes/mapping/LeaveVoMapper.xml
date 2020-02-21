@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.accp.dao.LeaveVoDao">
+	<!-- 查询请假vo对象 -->
+	<select id="selectLeaveVo" resultType="com.accp.vo.LeaveVo">
+		SELECT a.leave_id AS leaveId,a.`create_man` AS createMan,
+		b.`employee_name` AS employeeName,a.`department_id` AS departmentId,
+		e.`department_name` AS departmentName,a.`create_time` AS createTime,
+		a.`start_time` AS startTime,a.`end_time` AS endTime,
+		a.`next_deal_man` AS nextDealMan,c.`employee_name` AS employeeName2,
+		a.`event` AS EVENT,a.`total_count` AS totalCount,
+		a.`status_id` AS statusId,d.`status_name` AS statusName,
+		(SELECT check_result.result_name FROM tb_check JOIN check_result ON tb_check.check_result=check_result.result_id WHERE tb_check.type_id = 1 AND tb_check.biz_id = a.leave_id ORDER BY tb_check.check_time DESC LIMIT 0,1) AS resultName,
+		(SELECT check_time FROM tb_check WHERE type_id = 1 AND biz_id = a.leave_id ORDER BY check_time DESC LIMIT 0,1) AS checkTime,
+		b.position_id as positionId
+		FROM tb_leave a JOIN employee b ON a.create_man=b.employee_id 
+		JOIN employee c ON a.next_deal_man=c.employee_id 
+		JOIN tb_status d ON a.status_id=d.status_id 
+		JOIN department e ON a.department_id=e.department_id
+		<where>
+			<if test="startTime!=null">
+				<!-- AND a.start_time &gt;= #{startTime,jdbcType=TIMESTAMP} -->
+			</if>
+			<if test="startTime!=null and endTime!=null">
+				<!-- AND a.end_time &lt;= #{endTime,jdbcType=TIMESTAMP} -->
+			</if>
+			<!-- 普通员工 -->
+				<if test="positionid==3 or positionid==4 or positionid==5">
+					AND a.create_man=#{employeeId}
+				</if>
+				<!-- 人事 -->
+				<if test="positionid==6">
+					AND a.create_man=#{employeeId} OR a.status_id=4
+				</if>
+				<!-- 部门经理 -->
+				<if test="positionid==2">
+					AND a.create_man=#{employeeId} OR a.department_id=#{departmentId} AND a.status_id=2
+				</if>
+				<!-- 总经理 -->
+				<if test="positionid==1">
+					AND a.status_id=7
+				</if>
+			<!-- <choose>
+				普通员工
+				<when test="positionid==3 or positionid==6">
+					AND a.create_man=#{employeeId}
+				</when>
+				部门经理
+				<when test="positionid==2">
+					AND a.create_man=#{employeeId} OR a.department_id=#{departmentId} AND a.status_id=2
+				</when>
+				总经理
+				<when test="positionid==1">
+					AND a.create_man=#{employeeId} OR a.total_count>=5000
+				</when>
+				财务
+				<when test="positionid==4">
+					AND a.create_man=#{employeeId} OR a.status_id=3
+				</when>
+				出纳
+				<when test="positionid==5">
+					AND a.create_man=#{employeeId} OR a.status_id=4
+				</when>
+			</choose> -->
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<!-- 根据请假id查询请假vo对象 -->
+	<select id="selectLeavevoByleaveid" resultType="com.accp.vo.LeaveVo">
+		SELECT a.leave_id AS leaveId,a.`create_man` AS createMan,
+		b.`employee_name` AS employeeName,a.`department_id` AS departmentId,
+		e.`department_name` AS departmentName,a.`create_time` AS createTime,
+		a.`start_time` AS startTime,a.`end_time` AS endTime,
+		a.`next_deal_man` AS nextDealMan,c.`employee_name` AS employeeName2,
+		a.`event` AS EVENT,a.`total_count` AS totalCount,
+		a.`status_id` AS statusId,d.`status_name` AS statusName,
+		(SELECT check_result.result_name FROM tb_check JOIN check_result ON tb_check.check_result=check_result.result_id WHERE tb_check.type_id = 1 AND tb_check.biz_id = a.leave_id ORDER BY tb_check.check_time DESC LIMIT 0,1) AS resultName,
+		(SELECT check_time FROM tb_check WHERE type_id = 1 AND biz_id = a.leave_id ORDER BY check_time DESC LIMIT 0,1) AS checkTime,
+		b.position_id as positionId
+		FROM tb_leave a JOIN employee b ON a.create_man=b.employee_id 
+		JOIN employee c ON a.next_deal_man=c.employee_id 
+		JOIN tb_status d ON a.status_id=d.status_id 
+		JOIN department e ON a.department_id=e.department_id
+		WHERE a.leave_id = #{leaveId}
+	</select>
+</mapper>

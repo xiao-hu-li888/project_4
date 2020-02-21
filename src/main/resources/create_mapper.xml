@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE generatorConfiguration  
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">  
+<generatorConfiguration>  
+    <context id="mySqlTables"  targetRuntime="MyBatis3">  
+        <commentGenerator>  
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>  
+        </commentGenerator>  
+        <!--数据库链接URL，用户名、密码 -->  
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/project2" userId="root" password="123456">
+        </jdbcConnection>
+        <javaTypeResolver>  
+            <property name="forceBigDecimals" value="false"/>  
+        </javaTypeResolver>  
+        <!--pojo生成位置-->  
+        <javaModelGenerator targetPackage="com.accp.pojo" targetProject="src/main/java">  
+            <property name="enableSubPackages" value="true"/>  
+            <property name="trimStrings" value="true"/>  
+        </javaModelGenerator>  
+        <!--映射文件生成位置-->  
+        <sqlMapGenerator targetPackage="mapping" targetProject="src/main/resources">  
+            <property name="enableSubPackages" value="true"/>  
+        </sqlMapGenerator>  
+        <!--dao生成位置-->  
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.accp.dao" targetProject="src/main/java">  
+            <property name="enableSubPackages" value="true"/>  
+        </javaClientGenerator>  
+        <!-- 
+		tableName是数据库中的表名或视图名
+		domainObjectName是实体类名
+		-->  
+		<!--用户表-->
+        <table tableName="employee" domainObjectName="Employee" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--职位表-->
+        <table tableName="tb_position" domainObjectName="Position" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--部门表-->
+        <table tableName="department" domainObjectName="Department" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--请假表-->
+        <table tableName="tb_leave" domainObjectName="Leave" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--报销主表-->
+        <table tableName="reimburse" domainObjectName="Reimburse" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--报销详情表-->
+        <table tableName="reimburse_detail" domainObjectName="Reimburse_detail" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--状态表-->
+        <table tableName="tb_status" domainObjectName="Status" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--审查记录表-->
+        <table tableName="tb_check" domainObjectName="Check" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--审查结果表-->
+        <table tableName="check_result" domainObjectName="Check_result" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <!--统计表-->
+        <table tableName="tb_count" domainObjectName="Count" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+    </context>  
+</generatorConfiguration>  

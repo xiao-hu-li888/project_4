@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<!-- 默认别名:类名小写 -->
+		<package name="com.accp.pojo"/>
+	</typeAliases>
+	<!-- 分页插件 -->
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageHelper">
+			<!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库 -->
+			<property name="dialect" value="mysql" />
+			<!-- 设置为true时，使用RowBounds分页会进行count查询 -->
+			<property name="rowBoundsWithCount" value="true" />
+		</plugin>
+	</plugins>
+	
+	<mappers>
+		<mapper resource="mapping/Check_resultMapper.xml"/>
+		<mapper resource="mapping/CheckMapper.xml"/>
+		<mapper resource="mapping/CountMapper.xml"/>
+		<mapper resource="mapping/DepartmentMapper.xml"/>
+		<mapper resource="mapping/EmployeeMapper.xml"/>
+		<mapper resource="mapping/LeaveMapper.xml"/>
+		<mapper resource="mapping/PositionMapper.xml"/>
+		<mapper resource="mapping/Reimburse_detailMapper.xml"/>
+		<mapper resource="mapping/ReimburseMapper.xml"/>
+		<mapper resource="mapping/StatusMapper.xml"/>
+		<mapper resource="mapping/ReimburseVoMapper.xml"/>
+		<mapper resource="mapping/LeaveVoMapper.xml"/>
+	</mappers>
+</configuration>

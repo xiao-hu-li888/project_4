@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="js/My97DatePicker/WdatePicker.js"></script>
+<link href="js/My97DatePicker/SKIN/WdatePicker.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<input type="hidden" name="positionid"/>
+	<input type="hidden" name="employeeId"/>
+	<input type="hidden" name="departmentId"/>
+	<div class="action  divaction">
+		<div class="t">请假列表</div>
+		<div class="pages">
+			<div class="forms">
+				<form id="leave_searchLeave_action" name="queryForm"
+					action="ckqj.html"
+					method="get">
+					<label for="time">开始时间</label> <input type="text" name="sTime"
+						value="" id="startDate" class="nwinput"> <label
+						for="end-time">结束时间</label> <input type="text" name="eTime"
+						value="" id="endDate" class="nwinput" readonly=""> <input
+						type="hidden" name="pageNo" value="1"> <input
+						type="hidden" name="pageSize" value="5"> <input
+						type="submit" id="leave_searchLeave_action_0" value="查询"
+						class="submit_01">
+
+				</form>
+			</div>
+			<!--增加报销单 区域 开始-->
+			<table id="vmLeave" width="90%" border="0" cellspacing="0" cellpadding="0"
+				class="list items">
+				<thead>
+					<tr class="even">
+						<td>编号</td>
+						<td>名称</td>
+						<td>发起时间</td>
+						<td>审批时间</td>
+						<td>审批意见</td>
+						<td>待处理人</td>
+						<td>审批状态</td>
+						<td>操作</td>
+					</tr>
+				</thead>
+				<tbody id="jiazai">
+					
+						<!-- <tr v-for="(temp,index) in pageinfo.list">
+							<td><a href="javascript:void(0)">{{temp.leaveId}}</a></td>
+							<td><span>{{temp.employeeName}}</span>请假<span>{{temp.totalCount}}</span>天</td>
+							<td>{{temp.createTime}}</td>
+							<td>{{temp.checkTime}}</td>
+							<td>{{temp.resultName}}</td>
+							<td>
+								{{temp.nextDealMan}}
+							</td>
+							<td>
+								{{temp.statusName}}
+								<input id="checkId" type="hidden" value="temp.checkId" />
+							</td>
+							<td>
+								<a href="qjxq.html">
+									<img src="images/search.gif" width="16" height="15">
+								</a>
+								<template v-if="">
+									<a href="qjxq.html">
+										<img src="images/sub.gif" width="16" height="15">
+									</a>
+								</template>
+							</td>
+						</tr> -->
+					
+				</tbody>
+				<tr>
+						<td colspan="7" align="center">
+							<div class="page-bar">
+								<a href="javascript:void(0);" id="shou">首页</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="prev">上一页</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript:void(0);" id="next">下一页</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" id="last">尾页</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript:void(0);" id="yeshu"></a>/<a href="javascript:void(0);" id="yeshu2"></a>
+							</div>
+						</td>
+				</tr>
+			</table>
+			<!--请假 区域 结束-->
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript" src="/project_4/js/jquery-1.12.4.js" ></script>
+<script type="text/javascript">
+var startTime=$("input[name=sTime]").val();
+var endTime=$("input[name=eTime]").val();
+if (startTime=="") {
+	startTime=null;
+}
+if (endTime=="") {
+	endTime=null;
+}
+var PAGE_INFO;//非常重要
+//取值
+$.getJSON(`/project_4/api/emps/getemp`,function(emp){
+	//赋值
+	$("input[type=hidden][name=positionid]").val(emp.positionId);
+	$("input[type=hidden][name=employeeId]").val(emp.employeeId);
+	$("input[type=hidden][name=departmentId]").val(emp.departmentId);
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	load(1,3,startTime,endTime,positionid,employeeId,departmentId);//初始化
+});
+//首页
+$("#shou").click(function(){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	load(PAGE_INFO.firstPage,PAGE_INFO.pageSize,startTime,endTime,positionid,employeeId,departmentId);
+});
+//上一页	es6 定义函数
+$("#prev").click(e=>{
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	if(PAGE_INFO.hasPreviousPage){
+		load(PAGE_INFO.prePage,PAGE_INFO.pageSize,startTime,endTime,positionid,employeeId,departmentId);
+	}else{
+		alert("没有上一页");
+	}
+});
+//下一页
+$("#next").click(function(e){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	if(PAGE_INFO.hasNextPage){
+		load(PAGE_INFO.nextPage,PAGE_INFO.pageSize,startTime,endTime,positionid,employeeId,departmentId);
+	}else{
+		alert("没有下一页");
+	}
+});
+//尾页
+$("#last").click(function(){
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	var employeeId=$("input[type=hidden][name=employeeId]").val();
+	var departmentId=$("input[type=hidden][name=departmentId]").val();
+	load(PAGE_INFO.lastPage,PAGE_INFO.pageSize,startTime,endTime,positionid,employeeId,departmentId);
+});
+//点击查询
+$(document).on("click",".search",function(){
+	var zhi="search";
+	var leaveId=$(this).parent().parent().children().eq(0).text();
+	window.sessionStorage.setItem("zhi",zhi);
+	window.sessionStorage.setItem("leaveId",leaveId);
+	location.href="qjxq.html";
+});
+//点击进行审批
+$(document).on("click",".sub",function(){
+	var zhi="sub";
+	var leaveId=$(this).parent().parent().children().eq(0).text();
+	var positionid=$("input[type=hidden][name=positionid]").val();
+	window.sessionStorage.setItem("zhi",zhi);
+	window.sessionStorage.setItem("leaveId",leaveId);
+	window.sessionStorage.setItem("positionid",positionid);
+	location.href="qjxq.html";
+});
+function load(pageNum,pageSize,startTime,endTime,positionid,employeeId,departmentId){
+	$.getJSON(`/project_4/api/leavevos/${pageNum}/${pageSize}/${startTime}/${endTime}/${positionid}/${employeeId}/${departmentId}`,function(pageInfo){
+		PAGE_INFO=pageInfo;//非常重要
+		$("table>tbody#jiazai").empty();
+		$.each(pageInfo.list,function(i,obj){
+			var $row=$(`<tr>
+					<td><a href="javascript:void(0)">${obj.leaveId}</a></td>
+					<td>${obj.employeeName}请假${obj.totalCount}天</td>
+					<td>${obj.createTime}</td>
+					<td>${obj.checkTime}</td>
+					<td>${obj.resultName}</td>
+					<td>${obj.employeeName2}</td>
+					<td>${obj.statusName}</td>
+					<td class='imgimg'>
+					</td>
+				</tr>`);
+			$("table>tbody#jiazai").append($row);
+			var $ping="";
+			if (positionid==3 || positionid==4 || positionid==5) {
+				if (obj.statusName=="待审批") {
+					$ping=$(`<a href="javascript:void(0);" class='search'>
+								<img src="images/search.gif" title="查看详情" width="16" height="15">
+							</a>`);
+				}else if(obj.statusName=="已审批" || obj.statusName=="已存档"){
+					$ping=$(`<a href="javascript:void(0);" class='search'>
+						<img src="images/search.gif" title="查看详情" width="16" height="15">
+					</a>`);
+				}
+			}else if(positionid==2){
+				//部门经理
+				//不是自己，是员工
+				if (employeeId!=obj.employeeId) {
+					//alert(employeeId);
+					//alert(obj.employeeId);
+					if (obj.statusName=="待审批") {
+						$ping=$(`<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+					}
+				}else{
+					//是自己了
+					if (obj.statusName=="待审批") {
+						$ping=$(`
+								/* <a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a> */
+								<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a>`);
+					}else if(obj.statusName=="已审批" || obj.statusName=="已存档"){
+						$ping=$(`<a href="javascript:void(0);" class='search'>
+							<img src="images/search.gif" title="查看详情" width="16" height="15">
+						</a>`);
+					}
+				}
+			}else if(positionid==6){
+				//不是自己，是其他人
+				if (employeeId!=obj.employeeId) {
+					if (obj.statusName=="已审批") {
+						$ping=$(`
+								<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a><a href="javascript:void(0);" class='sub'><img src="images/sub.gif" width="16" height="15"></a>`);
+					}
+				}else{
+					//是自己了
+					if (obj.statusName=="待审批") {
+						$ping=$(`
+								/* <a href="javascript:void(0);" class='delete'><img src="images/delete.gif" width="16" height="15"></a> */
+								<a href="javascript:void(0);" class='search'>
+									<img src="images/search.gif" title="查看详情" width="16" height="15">
+								</a>`);
+					}else if(obj.statusName=="已审批" || obj.statusName=="已存档"){
+						$ping=$(`<a href="javascript:void(0);" class='search'>
+							<img src="images/search.gif" title="查看详情" width="16" height="15">
+						</a>`);
+					}
+				}
+			}
+			$("table>tbody#jiazai>tr").eq(i).children("td.imgimg").append($ping);
+		});
+		
+		$("#yeshu").text("第"+pageInfo.pageNum+"页");
+		$("#yeshu2").text("共"+pageInfo.pages+"页");
+	});
+} 
+$(function(){
+	 //日期选择控件
+	$("#startDate").click(function(){
+		WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endDate\')}',isShowClear:true, readOnly:true });
+	});
+	$("#endDate").click(function(){
+		WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startDate\')}',isShowClear:true, readOnly:true });
+	});
+});
+</script>
+</html>
