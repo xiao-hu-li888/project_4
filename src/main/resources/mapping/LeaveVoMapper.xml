@@ -19,10 +19,10 @@
 		JOIN department e ON a.department_id=e.department_id
 		<where>
 			<if test="startTime!=null">
-				<!-- AND a.start_time &gt;= #{startTime,jdbcType=TIMESTAMP} -->
+				AND a.start_time &gt;= #{startTime,jdbcType=TIMESTAMP}
 			</if>
-			<if test="startTime!=null and endTime!=null">
-				<!-- AND a.end_time &lt;= #{endTime,jdbcType=TIMESTAMP} -->
+			<if test="endTime!=null">
+				AND a.end_time &lt;= #{endTime,jdbcType=TIMESTAMP}
 			</if>
 			<!-- 普通员工 -->
 				<if test="positionid==3 or positionid==4 or positionid==5">
