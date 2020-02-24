@@ -40,68 +40,17 @@
 						</tr>
 					
 				</thead>
-				<tbody>
-					
-						
-							
-							
-								<tr>
+				<tbody id="jiazai">
+								<!-- <tr>
 									<td>0</td>
 									<td>总经理</td>
 									<td>￥140000.0</td>
 									<td>2018年</td>
-								</tr>
-							
-					
-						
-							
-							
-								<tr>
-									<td>1</td>
-									<td>财务部</td>
-									<td>￥4980.0</td>
-									<td>2018年</td>
-								</tr>
-							
-					
-						
-							
-							
-								<tr>
-									<td>2</td>
-									<td>人事部</td>
-									<td>￥224.0</td>
-									<td>2018年</td>
-								</tr>
-							
-					
-						
-							
-							
-								<tr>
-									<td>3</td>
-									<td>研发部</td>
-									<td>￥297243.0</td>
-									<td>2018年</td>
-								</tr>
-							
-					
-						
-							
-							
-								<tr>
-									<td>4</td>
-									<td>测试部</td>
-									<td>￥60436.0</td>
-									<td>2018年</td>
-								</tr>
-							
-					
-
+								</tr> -->
 					<tr>
 						<td></td>
 						<td bgcolor="yellow">总计</td>
-						<td bgcolor="yellow">￥502883.0</td>
+						<td bgcolor="yellow" id="zong"></td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -129,6 +78,41 @@
 <script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/echarts.js" charset="UTF-8"></script>
 <script type="text/javascript">
+var zong=window.sessionStorage.getItem("zong");
+if (zong) {
+	$("#zong").text(zong);
+}
+var year=window.sessionStorage.getItem("year");
+if (year) {
+	load(year);//初始化
+}
+function load(year){
+	$.getJSON(`/project_4/api/counts/byyear/${year}`,function(count){
+		$("table>tbody#jiazai").empty();
+		$.each(count,function(i,obj){
+			var departName;
+			if (obj.departmentId==1) {
+				departName="总经理";
+			}else if (obj.departmentId==2) {
+				departName="人事部";
+			}else if (obj.departmentId==3) {
+				departName="财务部";
+			}else if (obj.departmentId==4) {
+				departName="研发部";
+			}else if (obj.departmentId==5) {
+				departName="测试部";
+			}
+			var $row=$(`<tr>
+					<td>${i+1}</td>
+					<td>${departName}</td>
+					<td>￥${obj.money}</td>
+					<td>${obj.year}年</td>
+				</tr>`);
+			$("table>tbody#jiazai").append($row);
+		});
+	});
+} 
+
 	$(function(){
 		initEcharts('pie');
 	});
